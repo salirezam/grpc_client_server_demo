@@ -1,8 +1,36 @@
 syntax = "proto3";
 option go_package = "github.com/salirezam/grpc_client_server_demo/api";
 package api;
+
+// Message Definition
+
+message User {
+  string id = 1;
+  string name = 2;
+}
+
+message ChatMessage {
+  string id = 1;
+  User user = 2;
+  string message = 3;
+  string timestamp = 4;
+}
+
+message Connect {
+  User user = 1;
+  bool active = 2;
+}
+
+message Close {}
+
 message Message {
   string body = 1;
+}
+
+// Service Definition
+service Broadcast {
+  rpc CreateStream(Connect) returns (stream ChatMessage);
+  rpc BroadcastMessage(ChatMessage) returns (Close);
 }
 service Greeting {
   rpc SayHello(Message) returns (Message) {}
