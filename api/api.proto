@@ -1,0 +1,9 @@
+syntax = "proto3";
+option go_package = "github.com/salirezam/grpc_client_server_demo/api";
+package api;
+message Message {
+  string body = 1;
+}
+service Greeting {
+  rpc SayHello(Message) returns (Message) {}
+}
