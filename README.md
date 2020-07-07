@@ -26,7 +26,10 @@ $ openssl x509 -req -sha256 -in cert/server.csr -signkey cert/server.key -out ce
 ```
 ### Run client and server
 - **Server :** `./bin/server`
-- **Client :** `./bin/client -name [NAME]`
+- **Client :** `./bin/client -name [NAME] -username [USERNAME] -password [PASSWORD]`
+There are two default username/password that can be used for testing purposes:
+username:Alireza, password: 123456
+username:John, password: 654321
 
 ### Useful Resources
 - A basic tutorial introduction to gRPC in Go. [Link](https://grpc.io/docs/languages/go/basics/)
