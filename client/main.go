@@ -53,14 +53,41 @@ func connect(user *api.User) error {
 	return streamerror
 }
 
+// Authentication struct
+type Authentication struct {
+	Login    string
+	Password string
+}
+
+// GetRequestMetadata gets the current request metadata
+func (a *Authentication) GetRequestMetadata(context.Context, ...string) (map[string]string, error) {
+	return map[string]string{
+		"login":    a.Login,
+		"password": a.Password,
+	}, nil
+}
+
+// RequireTransportSecurity indicates whether the credentials needs transport security
+func (a *Authentication) RequireTransportSecurity() bool {
+	return true
+}
+
 func main() {
 	timestamp := time.Now()
 	done := make(chan int)
 
 	name := flag.String("name", "Alireza", "Name of the user")
+	username := flag.String("username", "Alireza", "username of the user")
+	password := flag.String("password", "123456", "password of the user")
 	flag.Parse()
 
 	id := sha256.Sum256([]byte(timestamp.String() + *name))
+
+	// setup the login info
+	auth := Authentication{
+		Login:    *username,
+		Password: *password,
+	}
 
 	// Create the TLS credentials
 	creds, err := credentials.NewClientTLSFromFile("cert/server.crt", "")
@@ -69,7 +96,9 @@ func main() {
 	}
 	var conn *grpc.ClientConn
 
-	conn, err = grpc.Dial("localhost:7777", grpc.WithTransportCredentials(creds))
+	conn, err = grpc.Dial("localhost:7777",
+		grpc.WithTransportCredentials(creds),
+		grpc.WithPerRPCCredentials(&auth))
 	if err != nil {
 		log.Fatalf("did not connect: %s", err)
 	}
