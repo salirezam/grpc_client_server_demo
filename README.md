@@ -15,6 +15,15 @@ This GO chat application is based on gRPC using Protobuf. It has two part which 
 - Build the client with the following command
 `go build -i -v -o bin/client github.com/salirezam/grpc_client_server_demo/client`
 
+### Building certificates
+Create a directory with name `cert` in the root directory and run the following commands to generate the required certificates.
+Use `localhost` for host name or common name if you are using the default code.
+```
+$ openssl genrsa -out cert/server.key 2048
+$ openssl req -new -x509 -sha256 -key cert/server.key -out cert/server.crt -days 3650
+$ openssl req -new -sha256 -key cert/server.key -out cert/server.csr
+$ openssl x509 -req -sha256 -in cert/server.csr -signkey cert/server.key -out cert/server.crt -days 3650
+```
 ### Run client and server
 - **Server :** `./bin/server`
 - **Client :** `./bin/client -name [NAME]`
