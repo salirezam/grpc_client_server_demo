@@ -9,6 +9,7 @@ import (
 	"github.com/salirezam/grpc_client_server_demo/api"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"os"
 	"sync"
@@ -61,12 +62,18 @@ func main() {
 
 	id := sha256.Sum256([]byte(timestamp.String() + *name))
 
+	// Create the TLS credentials
+	creds, err := credentials.NewClientTLSFromFile("cert/server.crt", "")
+	if err != nil {
+		log.Fatalf("could not load tls cert: %s", err)
+	}
 	var conn *grpc.ClientConn
 
-	conn, err := grpc.Dial(":7777", grpc.WithInsecure())
+	conn, err = grpc.Dial("localhost:7777", grpc.WithTransportCredentials(creds))
 	if err != nil {
-		log.Fatalf("couldn't connect: %s", err)
+		log.Fatalf("did not connect: %s", err)
 	}
+
 	//defer conn.Close()
 
 	//client := api.NewGreetingClient(conn)
