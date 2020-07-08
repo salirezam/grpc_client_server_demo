@@ -23,15 +23,8 @@ message Connect {
 
 message Close {}
 
-message Message {
-  string body = 1;
-}
-
 // Service Definition
 service Broadcast {
   rpc CreateStream(Connect) returns (stream ChatMessage);
   rpc BroadcastMessage(ChatMessage) returns (Close);
-}
-service Greeting {
-  rpc SayHello(Message) returns (Message) {}
 }

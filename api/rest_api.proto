@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "github.com/salirezam/grpc_client_server_demo/api";
+package api;
+
+import "google/api/annotations.proto";
+
+message Message {
+    string body = 1;
+  }
+  
+
+service Greeting {
+    rpc SayHello(Message) returns (Message) {
+      option (google.api.http) = {
+        post: "/api/hello"
+        body: "*"
+      };
+    }
+  }
